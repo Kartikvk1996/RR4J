@@ -16,10 +16,10 @@ void Configure::init()
 
 bool Configure::registerNativeMethods()
 {
-    recordExecutor = javaNativeInterface->FindClass("com/recordreplay/replay/handles/RecordHandler");
+    recordExecutor = javaNativeInterface->FindClass("com/rr4j/replay/handles/RecordHandler");
     if(recordExecutor == NULL)
     {
-        PLOGE<<"Failed to find class 'com.recordreplay.replay.handles.RecordHandler'";
+        PLOGE<<"Failed to find class 'com.rr4j.replay.handles.RecordHandler'";
         return false;
     }
 
@@ -53,9 +53,9 @@ bool Configure::registerNativeMethods()
     int status = javaNativeInterface->RegisterNatives(recordExecutor, nMethods, nativeFunctionsMap.size());
     if(status != 0)
     {
-        PLOGE<<"Failed to register native methods for class 'com.recordreplay.replay.handles.RecordHandler'";
+        PLOGE<<"Failed to register native methods for class 'com.rr4j.replay.handles.RecordHandler'";
         return false;
     }
-    PLOGI<<"Successfully registered native methods for class 'com.recordreplay.replay.handles.RecordHandler'";
+    PLOGI<<"Successfully registered native methods for class 'com.rr4j.replay.handles.RecordHandler'";
     return true;
 }

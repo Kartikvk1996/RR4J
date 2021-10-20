@@ -45,31 +45,31 @@ std::unordered_map<jmethodID, int>& Rule::getTracedMethodsList()
 
 bool Rule::init()
 {
-    classTransformer = javaNativeInterface->FindClass("com/recordreplay/record/transform/ClassTransformer");
+    classTransformer = javaNativeInterface->FindClass("com/rr4j/record/transform/ClassTransformer");
 	if (classTransformer == NULL)
     {
-        PLOGE<<"Failed to find 'com.recordreplay.record.transform.ClassTransformer' class.";
+        PLOGE<<"Failed to find 'com.rr4j.record.transform.ClassTransformer' class.";
         return false;
 	}
 
 	transformClassMtdId = javaNativeInterface->GetStaticMethodID(classTransformer, "transformClass", "(Ljava/lang/Class;Ljava/lang/String;I)[B");
 	if (transformClassMtdId == NULL)
     {
-        PLOGE<<"Failed to find 'com.recordreplay.record.transform.ClassTransformer::transformClass' method.";
+        PLOGE<<"Failed to find 'com.rr4j.record.transform.ClassTransformer::transformClass' method.";
         return false;
 	}
 
 	getMtdNameToRestoreMtdId = javaNativeInterface->GetStaticMethodID(classTransformer, "getMtdNameToRestore", "()Ljava/lang/String;");
 	if (getMtdNameToRestoreMtdId == NULL)
     {
-        PLOGE<<"Failed to find 'com.recordreplay.record.transform.ClassTransformer::getMtdNameToRestore' method.";
+        PLOGE<<"Failed to find 'com.rr4j.record.transform.ClassTransformer::getMtdNameToRestore' method.";
         return false;
 	}
 
 	getByteCodeToRestoreMtdId = javaNativeInterface->GetStaticMethodID(classTransformer, "getByteCodeToRestore", "()[B");
 	if (getByteCodeToRestoreMtdId == NULL)
     {
-        PLOGE<<"Failed to find 'com.recordreplay.record.transform.ClassTransformer::getByteCodeToRestore' method.";
+        PLOGE<<"Failed to find 'com.rr4j.record.transform.ClassTransformer::getByteCodeToRestore' method.";
         return false;
 	}
 

@@ -10,10 +10,10 @@
 
 bool Exception::init()
 {
-    klass = javaNativeInterface->FindClass("com/recordreplay/record/JVMException");
+    klass = javaNativeInterface->FindClass("com/rr4j/record/JVMException");
     if(klass == NULL)
     {
-        PLOGE<<"Failed to find class 'com.recordreplay.record.JVMException'";
+        PLOGE<<"Failed to find class 'com.rr4j.record.JVMException'";
         return false;
     }
     return true;
@@ -24,7 +24,7 @@ bool Exception::exceptionCallback(JNIEnv* jni_env, jthread thread, jobject excep
     exceptionCallbackMtdId = jni_env->GetStaticMethodID(klass, "exceptionCallback", "(Ljava/lang/Thread;Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;)Z");
     if(exceptionCallbackMtdId == NULL)
     {
-        PLOGE<<"Failed to find method 'com.recordreplay.record.JVMException::exceptionCallback'";
+        PLOGE<<"Failed to find method 'com.rr4j.record.JVMException::exceptionCallback'";
         return false;
     }
 

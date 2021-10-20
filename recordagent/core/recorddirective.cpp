@@ -12,87 +12,87 @@
 
 bool RecordDirective::init()
 {
-    klass = javaNativeInterface->FindClass("com/recordreplay/record/RecordDirectives");
+    klass = javaNativeInterface->FindClass("com/rr4j/record/RecordDirectives");
     if(klass == NULL)
     {
-        PLOGE<<"Failed to find class 'com.recordreplay.record.RecordDirectives'";
+        PLOGE<<"Failed to find class 'com.rr4j.record.RecordDirectives'";
         return false;
     }
 
     setDirectiveMtdId = javaNativeInterface->GetStaticMethodID(klass, "setDirectives", "(ZIIZLjava/lang/String;Z)V");
     if(setDirectiveMtdId == NULL)
     {
-        PLOGE<<"Failed to find method 'com.recordreplay.record.RecordDirectives::setDirectives'";
+        PLOGE<<"Failed to find method 'com.rr4j.record.RecordDirectives::setDirectives'";
         return false;
     }
 
     setExitOnExceptionMtdId = javaNativeInterface->GetStaticMethodID(klass, "setExitOnException", "(Z)V");
     if(setExitOnExceptionMtdId == NULL)
     {
-        PLOGE<<"Failed to find method 'com.recordreplay.record.RecordDirectives::setExitOnException'";
+        PLOGE<<"Failed to find method 'com.rr4j.record.RecordDirectives::setExitOnException'";
         return false;
     }
 
     setExceptionCaughtMtdId = javaNativeInterface->GetStaticMethodID(klass, "setExceptionCaught", "(Z)V");
     if(setExceptionCaughtMtdId == NULL)
     {
-        PLOGE<<"Failed to find method 'com.recordreplay.record.RecordDirectives::setExceptionCaught'";
+        PLOGE<<"Failed to find method 'com.rr4j.record.RecordDirectives::setExceptionCaught'";
         return false;
     }
 
     setRememberHistoryMtdId = javaNativeInterface->GetStaticMethodID(klass, "setRememberHistory", "(I)V");
     if(setRememberHistoryMtdId == NULL)
     {
-        PLOGE<<"Failed to find method 'com.recordreplay.record.RecordDirectives::setRememberHistory'";
+        PLOGE<<"Failed to find method 'com.rr4j.record.RecordDirectives::setRememberHistory'";
         return false;
     }
 
     setThreadsToRecordMtdId = javaNativeInterface->GetStaticMethodID(klass, "setThreadsToRecord", "(I)V");
     if(setThreadsToRecordMtdId == NULL)
     {
-        PLOGE<<"Failed to find method 'com.recordreplay.record.RecordDirectives::setThreadsToRecord'";
+        PLOGE<<"Failed to find method 'com.rr4j.record.RecordDirectives::setThreadsToRecord'";
         return false;
     }
 
     makeRuleActiveMtdId = javaNativeInterface->GetStaticMethodID(klass, "makeRuleActive", "(Z)V");
     if(makeRuleActiveMtdId == NULL)
     {
-        PLOGE<<"Failed to find method 'com.recordreplay.record.RecordDirectives::makeRuleActive'";
+        PLOGE<<"Failed to find method 'com.rr4j.record.RecordDirectives::makeRuleActive'";
         return false;
     }
 
     isDumpCompletedMtdId = javaNativeInterface->GetStaticMethodID(klass, "isDumpCompleted", "()Z");
     if(isDumpCompletedMtdId == NULL)
     {
-        PLOGE<<"Failed to find method 'com.recordreplay.record.RecordDirectives::isDumpCompleted'";
+        PLOGE<<"Failed to find method 'com.rr4j.record.RecordDirectives::isDumpCompleted'";
         return false;
     }
 
     initiateDumpingMtdId = javaNativeInterface->GetStaticMethodID(klass, "initiateDumping", "()V");
     if(initiateDumpingMtdId == NULL)
     {
-        PLOGE<<"Failed to find method 'com.recordreplay.record.RecordDirectives::initiateDumping'";
+        PLOGE<<"Failed to find method 'com.rr4j.record.RecordDirectives::initiateDumping'";
         return false;
     }
 
     setRecordingStatusMtdId = javaNativeInterface->GetStaticMethodID(klass, "setRecordingStatus", "(I)V");
     if(setRecordingStatusMtdId == NULL)
     {
-        PLOGE<<"Failed to find method 'com.recordreplay.record.RecordDirectives::setRecordingStatus'";
+        PLOGE<<"Failed to find method 'com.rr4j.record.RecordDirectives::setRecordingStatus'";
         return false;
     }
 
     getRecordingStatusMtdId = javaNativeInterface->GetStaticMethodID(klass, "getRecordingStatus", "()I");
     if(getRecordingStatusMtdId == NULL)
     {
-        PLOGE<<"Failed to find method 'com.recordreplay.record.RecordDirectives::getRecordingStatus'";
+        PLOGE<<"Failed to find method 'com.rr4j.record.RecordDirectives::getRecordingStatus'";
         return false;
     }
 
     resetDirectivesMtdId = javaNativeInterface->GetStaticMethodID(klass, "resetDirectives", "()V");
     if(resetDirectivesMtdId == NULL)
     {
-        PLOGE<<"Failed to find method 'com.recordreplay.record.RecordDirectives::resetDirectives'";
+        PLOGE<<"Failed to find method 'com.rr4j.record.RecordDirectives::resetDirectives'";
         return false;
     }
 
@@ -151,7 +151,7 @@ void RecordDirective::setRecordingStatus(JNIEnv* jniEnv, int value)
     jmethodID mtd = jniEnv->GetStaticMethodID(klass, "setRecordingStatus", "(I)V");
     if(mtd == NULL)
     {
-        PLOGE<<"Failed to find method 'com.recordreplay.record.RecordDirectives::setRecordingStatus' during callback";
+        PLOGE<<"Failed to find method 'com.rr4j.record.RecordDirectives::setRecordingStatus' during callback";
         return;
     }
     jniEnv->CallStaticVoidMethod(klass, mtd, value);

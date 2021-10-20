@@ -12,17 +12,17 @@
 
 bool Serializer::init()
 {
-    klass = javaNativeInterface->FindClass("com/recordreplay/record/serialize/Serializer");
+    klass = javaNativeInterface->FindClass("com/rr4j/record/serialize/Serializer");
     if(klass == NULL)
     {
-        PLOGE<<"Failed to find class 'com/recordreplay/record/serialize/Serializer'";
+        PLOGE<<"Failed to find class 'com/rr4j/record/serialize/Serializer'";
         return false;
     }
 
     serializeDataMtdId = javaNativeInterface->GetStaticMethodID(klass, "serializeData", "(Ljava/lang/String;)Z");
     if(serializeDataMtdId == NULL)
     {
-        PLOGE<<"Failed to find method 'com.recordreplay.record.Serializer::serializeData'";
+        PLOGE<<"Failed to find method 'com.rr4j.record.Serializer::serializeData'";
         return false;
     }
     return true;

@@ -53,7 +53,6 @@ public class ClassTransformer
 					if(mtd.toString().contains(method))
 					{
 						String klassName = klass.getName();
-						System.out.println(method +"  "+depth);
 						
 						byte[] oldCode = kls.toBytecode();
 						kls.defrost();
@@ -63,13 +62,13 @@ public class ClassTransformer
 						{
 							if(depth == 0)
 							{
-								mtd.insertBefore("{com.recordreplay.record.Record.methodIn(null, $args, 0, \""+klassName+"\", \""+method+"\");}");
-								mtd.insertAfter("{com.recordreplay.record.Record.methodOut(null, $_, \""+klassName+"\", "+depth+", \""+method+"\");}");
+								mtd.insertBefore("{com.rr4j.record.Record.methodIn(null, $args, 0, \""+klassName+"\", \""+method+"\");}");
+								mtd.insertAfter("{com.rr4j.record.Record.methodOut(null, $_, \""+klassName+"\", "+depth+", \""+method+"\");}");
 								newByteCode = kls.toBytecode();
 							}
 							else
 							{
-								mtd.insertAfter("{com.recordreplay.record.Record.methodOut(null, $_, \""+klassName+"\", "+depth+", \""+method+"\");}");
+								mtd.insertAfter("{com.rr4j.record.Record.methodOut(null, $_, \""+klassName+"\", "+depth+", \""+method+"\");}");
 								newByteCode = kls.toBytecode();
 							}
 						}
@@ -77,13 +76,13 @@ public class ClassTransformer
 						{
 							if(depth == 0)
 							{
-								mtd.insertBefore("{com.recordreplay.record.Record.methodIn($0, $args, 0, \""+klassName+"\", \""+method+"\");}");
-								mtd.insertAfter("{com.recordreplay.record.Record.methodOut($0, $_, \""+klassName+"\", "+depth+", \""+method+"\");}");
+								mtd.insertBefore("{com.rr4j.record.Record.methodIn($0, $args, 0, \""+klassName+"\", \""+method+"\");}");
+								mtd.insertAfter("{com.rr4j.record.Record.methodOut($0, $_, \""+klassName+"\", "+depth+", \""+method+"\");}");
 								newByteCode = kls.toBytecode();
 							}
 							else
 							{
-								mtd.insertAfter("{com.recordreplay.record.Record.methodOut($0, $_, \""+klassName+"\", "+depth+", \""+method+"\");}");
+								mtd.insertAfter("{com.rr4j.record.Record.methodOut($0, $_, \""+klassName+"\", "+depth+", \""+method+"\");}");
 								newByteCode = kls.toBytecode();
 							}
 						}
