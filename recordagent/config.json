@@ -1,0 +1,21 @@
+{
+	"logFileName": "record.log",
+	"logFileMaxSize": 100000,
+	"maxLogFiles": 2,
+	"recordDumpLocation":"",
+	"delayedStart":5000,
+	"recordCallerSnapshot": true,
+	"blacklistPackages":["java/lang","sun/reflect","java/util", "java/io"],
+	"rules": [
+		{
+			"method": "com/example/Test::MethodHasBug(IILjava/lang/String;)Ljava/lang/String;",
+			"exception": "java.lang.NullPointerException",
+			"additivity": false,
+			"exitOnException": true,
+			"threadsToMonitor" :1,
+			"depth":2,
+			"history":10,
+			"threadsToRecord":10
+		}
+	]
+}
