@@ -1,3 +1,5 @@
+[![CodeQL](https://github.com/Kartikvk1996/RR4J/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Kartikvk1996/RR4J/actions/workflows/codeql-analysis.yml)
+
 # RR4J [Record Replay 4 Java]
 <img width="200" height="200" src="https://github.com/Kartikvk1996/RR4J/blob/main/img/RR4J-logo.jpeg">
 RR4J is a tool that records java execution and later allows developers to replay locally. The tool solves one of the challenges
@@ -21,7 +23,7 @@ developers faces when developing an application i.e sporadic bugs which are not 
 1. Run `mvn clean install`
 
 ## Record Agent Configuration
-Once the build is completed you need to configure the agent record agent, this can be done through **config.json** file and the file should be in the same place the agent is. Below is a sample configuration.
+Once the build is completed you need to configure the record agent, this can be done through **config.json** file and the file should be in the same place the agent is. Below is a sample configuration.
 
 ```json
 {
