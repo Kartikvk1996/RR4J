@@ -1,8 +1,9 @@
 // Header imports
 #include "global_includes.hpp"
 
-// Bridge to interact with java "RecordDirective class"
-
+/**
+    Bridge to interact with java "RecordDirective class"
+**/
 class RecordDirective
 {
     jclass klass;

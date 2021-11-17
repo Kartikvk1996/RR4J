@@ -22,6 +22,7 @@ bool Agent::init()
 {
     try
     {
+        // Read the configuration file and configure the agent.
         std::ifstream file("config.json");
         std::string fileData;
         if(file) {
@@ -54,6 +55,10 @@ static void JNICALL _startOnThread(jvmtiEnv* jvmti, JNIEnv* jni, void *p)
 
 void Agent::startOnThread()
 {
+    /*  Delay is needed for some containerized application like tomcat where the class loading hierarchy
+        is completely different and there are separate class loaders and classes are not loaded until war file is deployed
+        so to get the entire visibility delay can be specified.
+    */
     int dStart = configuration->getDelayedStart();
     if(dStart >= 0)
     {
@@ -67,6 +72,7 @@ void Agent::startOnThread()
         }
     }
 
+    // We index all the classes loaded and its (jclass) class object pointer created by JVM to point each class.
     jclass *cptr;
     jint clsCount;
     jvmtiError er = jvmEnvironment->GetLoadedClasses(&clsCount, &cptr);
@@ -76,6 +82,7 @@ void Agent::startOnThread()
         return;
     }
 
+    // Indexing.
     for(int i=0; i<clsCount; i++)
     {
         char* sigPtr;
@@ -96,6 +103,7 @@ void Agent::startOnThread()
     Agent::memDeAllocate(cptr);
     PLOGI<<"Indexed "<<clsCount<<" classes";
 
+    // Create all the handlers and initializes them. These are later used to communicate with Java layer using JNI.
     gblRecordDirective = new RecordDirective();
     if(gblRecordDirective->init() == false)
     {
@@ -129,7 +137,7 @@ void Agent::startOnThread()
         return;
     }
 
-
+    // Get all the rules and run one by one.
     std::list<Rule*> rules = configuration->getRules();
     for(Rule* rule : rules)
     {

@@ -1,5 +1,12 @@
-// JVMTI Callbacks
+/**
+    Handles the callback raised by JVM. For any callbacks except VMInit to be handled. there must be a active rule set,
+    else all callbacks are ignored and JVM will continue to run normally.
+**/
 
+/**
+    Callback received when the VM is initialized loading all classes and ready for execution.
+    During this phase we initialize the agent and start the same on new thread.
+**/
 static void JNICALL callbackVMInit(jvmtiEnv *jvmti, JNIEnv *env, jthread thread)
 {
     javaNativeInterface = env;
@@ -17,14 +24,19 @@ static void JNICALL callbackVMInit(jvmtiEnv *jvmti, JNIEnv *env, jthread thread)
     }
 }
 
+/**
+    Callback received when an exception is raised.
+**/
 static void JNICALL callbackException(jvmtiEnv *jvmti_env, JNIEnv* jni_env, jthread thread, jmethodID method, jlocation location, jobject excep, jmethodID catch_method, jlocation catch_location)
 {
     Rule* rule = gblAgent->getCongiguration()->getActiveRule();
+
+    // Exit on exception is not set, or exception is received in the method not traced. we ignore it.
     if((rule->isExceptionSet()==false) || (rule->getTracedMethodsList().find(method) == rule->getTracedMethodsList().end()))
     {
         return;
     }
-    else
+    else // Check if exception matches, if yes, collect all the details and propagate to Java layer to handle it.
     {
         jvmti_env->RawMonitorEnter(gblExceptionCallbackLock);
 
@@ -74,9 +86,14 @@ static void JNICALL callbackException(jvmtiEnv *jvmti_env, JNIEnv* jni_env, jthr
     }
 }
 
+/**
+    Callback received when a interested thread enters the method.
+**/
 static void JNICALL callbackMethodEntry(jvmtiEnv *jvmti_env, JNIEnv* jni_env, jthread thread, jmethodID method)
 {
     Rule* rule = gblAgent->getCongiguration()->getActiveRule();
+
+    // Store the method information if method lies within max configured depth limit.
     if(rule->getCurrentDepth() <= rule->getDepth())
     {
         rule->getTracedMethodsList().insert(std::make_pair(method, rule->getCurrentDepth()));
@@ -84,17 +101,27 @@ static void JNICALL callbackMethodEntry(jvmtiEnv *jvmti_env, JNIEnv* jni_env, jt
     rule->incrementCurrentDepth();
 }
 
+/**
+    Callback received when a interested thread exits the method.
+**/
 static void JNICALL callbackMethodExit(jvmtiEnv *jvmti_env, JNIEnv* jni_env, jthread thread, jmethodID method, jboolean was_popped_by_exception, jvalue return_value)
 {
     Rule* rule = gblAgent->getCongiguration()->getActiveRule();
+
     if(rule->getCurrentDepth()>0)
         rule->decrementCurrentDepth();
 
+    /*
+        If we are at the starting method call then stop all the method entry and exit events on the thread and detach the hook and move to
+        method transform phase.
+    */
     if(rule->getCurrentDepth() == 0)
     {
+        // Disable method entry event.
         jvmtiError error = jvmti_env->SetEventNotificationMode(JVMTI_DISABLE, JVMTI_EVENT_METHOD_ENTRY, thread);
         if(!Agent::checkErrorAndLog(error))
         {
+            // Disable method exit event.
             error = jvmti_env->SetEventNotificationMode(JVMTI_DISABLE, JVMTI_EVENT_METHOD_EXIT, thread);
             if(!Agent::checkErrorAndLog(error))
             {
@@ -110,7 +137,9 @@ static void JNICALL callbackMethodExit(jvmtiEnv *jvmti_env, JNIEnv* jni_env, jth
     }
 }
 
-// TODO : recursion is not handled
+/**
+    Callback received when attached hook is triggered.
+**/
 static void JNICALL callbackBreakpoint(jvmtiEnv *jvmti_env, JNIEnv* jni_env, jthread thread, jmethodID method, jlocation location)
 {
     Rule* rule = gblAgent->getCongiguration()->getActiveRule();

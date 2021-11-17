@@ -45,6 +45,7 @@ std::unordered_map<jmethodID, int>& Rule::getTracedMethodsList()
 
 bool Rule::init()
 {
+    // Check all the required class are found and configure the variables.
     classTransformer = javaNativeInterface->FindClass("com/rr4j/record/transform/ClassTransformer");
 	if (classTransformer == NULL)
     {
@@ -78,6 +79,7 @@ bool Rule::init()
 
 bool Rule::incrementThreadsToMonitor()
 {
+    // Only one thread is allowed to identify method calls at a give time.
     try
     {
         std::lock_guard<std::mutex> lock(threadsMonitoredCountLock);
@@ -212,16 +214,19 @@ std::shared_ptr<Method> Rule::getMethod()
 
 void Rule::start()
 {
+    // If tracing is not completed, trace and identify all method calls
     if(isTracingCompleted() == false)
         identifyMethodCalls();
     else
         PLOGE<<"Skipping Tracing Method calls.";
 
+    // Once the methods are identified, transform the methods.
     if(isTransformationDone() == false)
         startTransformation();
     else
         PLOGE<<"Skipping method Transformation.";
 
+    // If recording is allowed, start the recording.
     if(gblRecordDirective->getRecordingStatus() == 1)
     {
         while(gblRecordDirective->getRecordingStatus() == 1)
@@ -236,6 +241,7 @@ void Rule::start()
     else
         PLOGE<<"Skipping method Recording";
 
+    // Once the recording is completed, then dump the recorded information.
     if(gblRecordDirective->getRecordingStatus() == 2)
         initiateDumpAndWait();
     else
@@ -248,9 +254,11 @@ void Rule::start()
 void Rule::identifyMethodCalls()
 {
     PLOGI<<"Identifying method calls for Rule with Method "<<methodPoint<<", Exception : "<<catchException;
+    // Attach the hook to the method mentioned in rule, since this is a starting point
     if(method->addHook(methodPoint))
     {
         setMethodHooksAttached();
+        // Once attached wait till any thread enters that method, once entered, trace all the method calls called down the flow.
         while(isTracingCompleted() == false)
         {
             PLOGI<<"Waiting for a tracing to complete.";
@@ -260,6 +268,7 @@ void Rule::identifyMethodCalls()
         if(isExceptionSet() == true)
         {
             PLOGI<<"Watching for '"<<getCatchException()<<"' Exception";
+            // Lookup for an exception raised by JVM machine on all threads. This is later handled in callback, check "callbacks.hpp"
             jvmtiError error = jvmEnvironment->SetEventNotificationMode(JVMTI_ENABLE, JVMTI_EVENT_EXCEPTION, (jthread) NULL);
             if(Agent::checkErrorAndLog(error))
             {
@@ -283,11 +292,14 @@ void Rule::startTransformation()
 
 	bool allMethodsTransformed = true;
 	bool fatalError = false;
+
+	// Iterate on all methods identified and transform them.
     for(std::pair<jmethodID, int> method : tracedMethods)
     {
         if(fatalError == true)
             break;
 
+        // Get method information.
         char* mName;
         char* mSignature;
         char* mGenericPtr;
@@ -303,6 +315,7 @@ void Rule::startTransformation()
                 error = jvmEnvironment->GetClassSignature(klass, &klassSignature, &klassGeneric);
                 if(!Agent::checkErrorAndLog(error))
                 {
+                    // Check if package is blacklisted from transformation
                     if(isPackageBlacklisted(klassSignature))
                     {
                         Agent::memDeAllocate(klassSignature);
@@ -341,6 +354,10 @@ void Rule::startTransformation()
                         }
                         else
                         {
+                            /*  Currently for some methods JVM will not allow transformation, Ex. lamda functions, anonymous functions
+                                Don't know why, we don't know whether to stop the recording process or just continue, since these functions
+                                can be reconstructed when we replay locally.
+                            */
                             allMethodsTransformed = false;
                             PLOGI<<"BCI for class "<<klassSignature<<mName<<mSignature<<" failed.";
                         }

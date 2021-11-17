@@ -1,7 +1,5 @@
 /**
-
-Defines all the imports used by the project
-
+    Defines all the imports used by the project
 **/
 
 #pragma once
