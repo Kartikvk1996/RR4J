@@ -1,5 +1,3 @@
-[![CodeQL](https://github.com/Kartikvk1996/RR4J/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Kartikvk1996/RR4J/actions/workflows/codeql-analysis.yml)
-
 # RR4J [Record Replay 4 Java]
 <img width="200" height="200" src="https://github.com/Kartikvk1996/RR4J/blob/main/img/RR4J-logo.jpeg">
 RR4J is a tool that records java execution and later allows developers to replay locally. The tool solves one of the challenges
