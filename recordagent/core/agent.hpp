@@ -64,7 +64,7 @@ public:
     **/
     std::shared_ptr<Configure> getCongiguration();
 
-private:
+public:
 
     /**
         Starts the agent rules on new thread
